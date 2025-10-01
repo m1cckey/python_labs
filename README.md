@@ -35,13 +35,12 @@ print(f'{total :.2f}')
 ```Python
 
 
-m = int(input('Минуты:'))
-h = m//60
-mn = m%60
-if mn < 10:
-    print(f'{h}:0{mn}')
-else:
-    print(f'{h}:{mn}')
+res = int(input())
+k = 0
+while res > 60:
+    res -= 60
+    k+=1
+print(f'{k}:{res}')
 ```
 ### Задание 5
 ![Картинка5](images/lab01/img05_Ganeeev_Lenar.png.png)
