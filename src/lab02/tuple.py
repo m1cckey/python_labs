@@ -1,16 +1,23 @@
 def format_record(rec):
     if not isinstance(rec, tuple) or len(rec) != 3:
         return 'TypeError'
+
     fio, group, gpa = rec
+
     gpa = f'{gpa:.2f}'
+
     fio = fio.strip()
     while '  ' in fio:
         fio = fio.replace('  ', ' ')
+
+
     lastname_N_O = [list(word) for word in fio.split()]
     lastname_N_O[0][0] = lastname_N_O[0][0].upper()
     lastname_N_O[1][0] = lastname_N_O[1][0].upper()
+
     if len(lastname_N_O)>2:
         lastname_N_O[2][0] = lastname_N_O[2][0].upper()
+
     form1 = "".join(lastname_N_O[0])
     form2 = "".join(lastname_N_O[1][0])
     if len(lastname_N_O) > 2:

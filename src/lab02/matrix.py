@@ -1,5 +1,5 @@
 def transpose(mat):
-    if len (mat) == 0:
+    if len(mat) == 0:
         return []
     row_length = len(mat[0])
     if any(len(row) != row_length for row in mat):

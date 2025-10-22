@@ -186,3 +186,67 @@ print(format_record(("Иванов Иван Иванович", "BIVT-25", 4.6)))
 print(format_record(("Петров Пётр Петрович", "IKBO-12", 5.0)))
 print(format_record(("  сидорова  анна   сергеевна ", "ABB-01", 3.999)))
 ```
+### LAB02
+### Задание 1
+![Картинка13](images/lab03/img_lab_03_01.png)
+```python
+import re
+from operator import itemgetter
+
+
+def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:
+
+    result = text
+    if yo2e:
+        result = result.replace('ё', 'е').replace('Ё', 'Е')
+    if casefold:
+        result = result.casefold()
+
+    result = re.sub(r'\s+', ' ', result)
+
+    return result.strip()
+
+
+def tokenize(text: str) -> list[str]:
+    pattern = r'\b[\w]+(?:-[\w]+)*\b'
+    return re.findall(pattern, text)
+
+
+def count_freq(tokens: list[str]) -> dict[str, int]:
+
+    freq = {}
+
+    for token in tokens:
+        if token in freq:
+            freq[token] += 1
+        else:
+            freq[token] = 1
+
+    return freq
+
+
+def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
+    items = list(freq.items())
+    items.sort(key=itemgetter(0))
+    items.sort(key=itemgetter(1), reverse=True)
+    return items[:n]
+```
+### Задание 2
+![Картинка13](images/lab03/img_lab_03_02.png)
+```python
+import sys
+from lib import normalize, tokenize, count_freq, top_n
+
+
+
+text = sys.stdin.read()
+normalized_text = normalize(text)
+tokens = tokenize(normalized_text)
+top_words = top_n(count_freq(tokens), 5)
+print(f"Всего слов: {len(tokens)}")
+print(f"Уникальных слов: {len(count_freq(tokens))}")
+print("Топ-5:")
+
+for word, count in top_words:
+    print(f"{word}:{count}")
+```
