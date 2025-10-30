@@ -186,7 +186,7 @@ print(format_record(("Иванов Иван Иванович", "BIVT-25", 4.6)))
 print(format_record(("Петров Пётр Петрович", "IKBO-12", 5.0)))
 print(format_record(("  сидорова  анна   сергеевна ", "ABB-01", 3.999)))
 ```
-### LAB02
+### LAB03
 ### Задание 1
 ![Картинка13](images/lab03/img_lab_03_01.png)
 ```python
@@ -249,4 +249,99 @@ print("Топ-5:")
 
 for word, count in top_words:
     print(f"{word}:{count}")
+```
+### LAB04
+### Задание 1
+![Картинка14](images/lab04/lab04_1.png)
+```python
+import csv
+from pathlib import Path
+from typing import Sequence, Union
+
+
+def read_text(path: Union[str, Path], encoding: str = "utf-8") -> str:
+    path = Path(path) if isinstance(path, str) else path
+
+    with open(path, 'r', encoding=encoding) as file:
+        return file.read()
+
+
+def write_csv(rows: Sequence, path: Union[str, Path], header: Union[Sequence, None] = None) -> None:
+
+    if isinstance(path, str):
+        path = Path(path)
+    else:
+        path = path
+
+    with open(path, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+
+        if header is not None:
+            writer.writerow(header)
+
+        for row in rows:
+            writer.writerow(row)
+
+
+```
+### Задание 2
+![Картинка14](images/lab04/lab04_02.png)
+```python
+import sys
+
+'''добавляем нужный нам путь в список путей откуда мложно импортировать модули'''
+sys.path.append("C:/Users/sacre/PycharmProjects/python_labs/src/lib")
+from src.lib.text import normalize, tokenize, count_freq, top_n
+from io_txt_csv import read_text, write_csv
+from pathlib import Path
+import argparse
+
+current_dir = Path(__file__).parent
+project_root = current_dir.parent.parent
+
+
+
+'''Функция которая читает содержимое файла'''
+def read_file_content(file_path: Path, encoding: str = "utf-8") -> str:
+    try:
+
+        return read_text(file_path, encoding=encoding)
+    except FileNotFoundError:
+        raise FileNotFoundError(f'Ошибка: файл {file_path} не найден')
+
+    except UnicodeDecodeError as error:
+        raise UnicodeDecodeError(f'Ошибка кодировки: {error}. Попробуйте указать другую кодировку')
+
+'''Всё что связано с третьей лабой'''
+def calculate_word_frequencies(text: str) -> dict[str, int]:
+    if not text.strip():
+        return {}
+
+    normalized_text = normalize(text, casefold=True, yo2e=True)
+    tokens = tokenize(normalized_text)
+    frequencies = count_freq(tokens)
+    top = top_n(frequencies)
+    return top
+
+'''Запись в csv'''
+def text_to_csv(rows, path = str(project_root / 'data' / 'lab04' / 'input.txt'), header=("word_count")) -> None:
+    return write_csv(rows, path=path, header=header)
+
+'''То что мне надо вывести в консоль'''
+def console(text: str) -> str:
+
+    tokens = tokenize(normalize(text))
+    top_words = top_n(count_freq(tokens))
+    res = f"Всего слов: {len(tokens)}"
+    res += f"\nУникальных слов: {len(set(tokens))}"
+    res += "\nТоп-5:"
+    for word, count in top_words:
+        res += f"\n{word}:{count}"
+
+    return res
+
+
+text_content = read_file_content(str(project_root / 'data' / 'lab04' / 'input.txt'))
+text_to_csv(calculate_word_frequencies(text_content))
+print(console(text_content))
 ```
