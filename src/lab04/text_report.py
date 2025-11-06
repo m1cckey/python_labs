@@ -35,7 +35,7 @@ def calculate_word_frequencies(text: str) -> dict[str, int]:
     return top
 
 '''Запись в csv'''
-def text_to_csv(rows, path = str(project_root / 'data' / 'lab04' / 'input.txt'), header=("word_count")) -> None:
+def text_to_csv(rows, path = str(project_root / 'data' / 'lab04' / 'output.txt'), header=("word_count")) -> None:
     return write_csv(rows, path=path, header=header)
 
 '''То что мне надо вывести в консоль'''
