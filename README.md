@@ -498,3 +498,139 @@ def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
 
 print(csv_to_xlsx('C:/Users/sacre/PycharmProjects/python_labs/data/lab05/samples/cities.csv', 'C:/Users/sacre/PycharmProjects/python_labs/data/lab05/out/people.xlsx'))
 ```
+### LAB06
+### Задание 1
+![Картинка17](images/lab06/lab06_01.png)
+```python
+import argparse
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname('C:/Users/sacre/PycharmProjects/python_labs/src/lib/text.py'))))
+from src.lib.text import normalize, tokenize, count_freq, top_n
+
+def read_file(file_path: str) -> str:
+    """Чтение содержимого файла"""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return file.read()
+    except FileNotFoundError:
+        print(f"Ошибка: Файл '{file_path}' не найден")
+        exit(1)
+    except Exception as e:
+        print(f"Ошибка при чтении файла: {e}")
+        exit(1)
+
+
+def cat_command(input_file: str, number_lines: bool = False):
+    """Реализация команды cat"""
+    try:
+        with open(input_file, 'r', encoding='utf-8') as file:
+            lines = file.readlines()
+
+            for i, line in enumerate(lines, 1):
+                if number_lines:
+                    print(f"{i:6d}\t{line.rstrip()}")
+                else:
+                    print(line.rstrip())
+
+    except FileNotFoundError:
+        raise FileNotFoundError("файл не найден")
+
+def stats_command(input_file: str, top_count: int = 5):
+    """Реализация команды stats"""
+    try:
+        # Читаем файл
+        text = read_file(input_file)
+
+        # Обрабатываем текст
+        normalized_text = normalize(text)
+        tokens = tokenize(normalized_text)
+        frequencies = count_freq(tokens)
+        top_words = top_n(frequencies, top_count)
+
+        # Выводим результаты
+        print(f"Всего слов: {len(tokens)}")
+        print(f"Уникальных слов: {len(frequencies)}")
+        print(f"\nТоп-{top_count} самых частых слов:")
+        print("-" * 30)
+
+        for i, (word, count) in enumerate(top_words, 1):
+            print(f"{i:2d}. {word:<20} {count:>4}")
+
+    except Exception as e:
+        print(f"Ошибка при анализе текста: {e}")
+        exit(1)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="CLI‑утилиты лабораторной №6")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    # подкоманда cat
+    cat_parser = subparsers.add_parser("cat", help="Вывести содержимое файла")
+    cat_parser.add_argument("--input", required=True, help="Путь к входному файлу")
+    cat_parser.add_argument("-n", action="store_true", help="Нумеровать строки")
+
+    # подкоманда stats
+    stats_parser = subparsers.add_parser("stats", help="Частоты слов")
+    stats_parser.add_argument("--input", required=True, help="Путь к входному файлу")
+    stats_parser.add_argument("--top", type=int, default=5, help="Количество топ-слов для вывода")
+
+    args = parser.parse_args()
+
+    if args.command == "cat":
+        cat_command(args.input, args.n)
+    elif args.command == "stats":
+        stats_command(args.input, args.top)
+
+if __name__ == "__main__":
+    main()
+```
+### Задание 2
+![Картинка18](images/lab06/lab06_02.png)
+```python
+import argparse
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname('C:/Users/sacre/PycharmProjects/python_labs/src/lib/json_help.py'))))
+from src.lib.json_help import json_to_csv, csv_to_json, csv_to_xlsx
+def main():
+    parser = argparse.ArgumentParser(description="Конвертеры данных")
+    sub = parser.add_subparsers(dest="cmd", required=True)
+
+    # json2csv команда
+    p1 = sub.add_parser("json2csv")
+    p1.add_argument("--in", dest="input", required=True, help="Входной JSON файл")
+    p1.add_argument("--out", dest="output", required=True, help="Выходной CSV файл")
+
+    # csv2json команда
+    p2 = sub.add_parser("csv2json")
+    p2.add_argument("--in", dest="input", required=True, help="Входной CSV файл")
+    p2.add_argument("--out", dest="output", required=True, help="Выходной JSON файл")
+
+    # csv2xlsx команда
+    p3 = sub.add_parser("csv2xlsx")
+    p3.add_argument("--in", dest="input", required=True, help="Входной CSV файл")
+    p3.add_argument("--out", dest="output", required=True, help="Выходной XLSX файл")
+
+    args = parser.parse_args()
+
+
+    if args.cmd == "json2csv":
+        json_to_csv(args.input, args.output)
+        print(f"Успешно конвертирован {args.input} в {args.output}")
+
+    elif args.cmd == "csv2json":
+        csv_to_json(args.input, args.output)
+        print(f"Успешно конвертирован {args.input} в {args.output}")
+
+    elif args.cmd == "csv2xlsx":
+        csv_to_xlsx(args.input, args.output)
+        print(f"Успешно конвертирован {args.input} в {args.output}")
+
+
+
+
+if __name__ == "__main__":
+    main()
+```
