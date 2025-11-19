@@ -7,17 +7,14 @@ def main():
     parser = argparse.ArgumentParser(description="Конвертеры данных")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
-    # json2csv команда
     p1 = sub.add_parser("json2csv")
     p1.add_argument("--in", dest="input", required=True, help="Входной JSON файл")
     p1.add_argument("--out", dest="output", required=True, help="Выходной CSV файл")
 
-    # csv2json команда
     p2 = sub.add_parser("csv2json")
     p2.add_argument("--in", dest="input", required=True, help="Входной CSV файл")
     p2.add_argument("--out", dest="output", required=True, help="Выходной JSON файл")
 
-    # csv2xlsx команда
     p3 = sub.add_parser("csv2xlsx")
     p3.add_argument("--in", dest="input", required=True, help="Входной CSV файл")
     p3.add_argument("--out", dest="output", required=True, help="Выходной XLSX файл")
