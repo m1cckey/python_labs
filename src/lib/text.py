@@ -6,17 +6,17 @@ def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:
 
     result = text
     if yo2e:
-        result = result.replace('ё', 'е').replace('Ё', 'Е')
+        result = result.replace("ё", "е").replace("Ё", "Е")
     if casefold:
         result = result.casefold()
 
-    result = re.sub(r'\s+', ' ', result)
+    result = re.sub(r"\s+", " ", result)
 
     return result.strip()
 
 
 def tokenize(text: str) -> list[str]:
-    pattern = r'\b[\w]+(?:-[\w]+)*\b'
+    pattern = r"\b[\w]+(?:-[\w]+)*\b"
     return re.findall(pattern, text)
 
 

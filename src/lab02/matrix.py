@@ -24,12 +24,18 @@ def col_sums(mat):
         return "ValueError"
     return [sum(col) for col in list(zip(*mat))]
 
-print('transpose:')
-print(transpose([ [1, 2, 3] ]), transpose([ [1], [2], [3] ]), transpose([ [1, 2], [3, 4] ]), sep = '\n')
-print(transpose([]), transpose([[1, 2], [3]]), sep = '\n')
-print('row_sums:')
-print(row_sums([ [1, 2, 3], [4, 5, 6] ]), row_sums([[-1, 1], [10, -10]]), sep = '\n')
-print(row_sums([[0, 0], [0, 0]]), row_sums([[1, 2], [3]]), sep = '\n')
-print('col_sums:')
-print(col_sums([ [1, 2, 3], [4, 5, 6] ]), col_sums([[-1, 1], [10, -10]]), sep = '\n')
-print(col_sums([[0, 0], [0, 0]]), col_sums([[1, 2], [3]]), sep = '\n')
+
+print("transpose:")
+print(
+    transpose([[1, 2, 3]]),
+    transpose([[1], [2], [3]]),
+    transpose([[1, 2], [3, 4]]),
+    sep="\n",
+)
+print(transpose([]), transpose([[1, 2], [3]]), sep="\n")
+print("row_sums:")
+print(row_sums([[1, 2, 3], [4, 5, 6]]), row_sums([[-1, 1], [10, -10]]), sep="\n")
+print(row_sums([[0, 0], [0, 0]]), row_sums([[1, 2], [3]]), sep="\n")
+print("col_sums:")
+print(col_sums([[1, 2, 3], [4, 5, 6]]), col_sums([[-1, 1], [10, -10]]), sep="\n")
+print(col_sums([[0, 0], [0, 0]]), col_sums([[1, 2], [3]]), sep="\n")

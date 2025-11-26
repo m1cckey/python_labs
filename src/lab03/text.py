@@ -2,7 +2,6 @@ import sys
 from lib import normalize, tokenize, count_freq, top_n
 
 
-
 text = sys.stdin.read()
 normalized_text = normalize(text)
 tokens = tokenize(normalized_text)

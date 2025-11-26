@@ -1,8 +1,19 @@
 import argparse
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname('C:/Users/sacre/PycharmProjects/python_labs/src/lib/json_help.py'))))
+
+sys.path.append(
+    os.path.dirname(
+        os.path.dirname(
+            os.path.dirname(
+                "C:/Users/sacre/PycharmProjects/python_labs/src/lib/json_help.py"
+            )
+        )
+    )
+)
 from src.lib.json_help import json_to_csv, csv_to_json, csv_to_xlsx
+
+
 def main():
     parser = argparse.ArgumentParser(description="Конвертеры данных")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -21,7 +32,6 @@ def main():
 
     args = parser.parse_args()
 
-
     if args.cmd == "json2csv":
         json_to_csv(args.input, args.output)
         print(f"Успешно конвертирован {args.input} в {args.output}")
@@ -33,8 +43,6 @@ def main():
     elif args.cmd == "csv2xlsx":
         csv_to_xlsx(args.input, args.output)
         print(f"Успешно конвертирован {args.input} в {args.output}")
-
-
 
 
 if __name__ == "__main__":

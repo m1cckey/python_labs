@@ -1,13 +1,23 @@
 import argparse
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname('C:/Users/sacre/PycharmProjects/python_labs/src/lib/text.py'))))
+
+sys.path.append(
+    os.path.dirname(
+        os.path.dirname(
+            os.path.dirname(
+                "C:/Users/sacre/PycharmProjects/python_labs/src/lib/text.py"
+            )
+        )
+    )
+)
 from src.lib.text import normalize, tokenize, count_freq, top_n
+
 
 def read_file(file_path: str) -> str:
     """Чтение содержимого файла"""
     try:
-        with open(file_path, 'r', encoding='utf-8') as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             return file.read()
     except FileNotFoundError:
         print(f"Ошибка: Файл '{file_path}' не найден")
@@ -20,7 +30,7 @@ def read_file(file_path: str) -> str:
 def cat_command(input_file: str, number_lines: bool = False):
     """Реализация команды cat"""
     try:
-        with open(input_file, 'r', encoding='utf-8') as file:
+        with open(input_file, "r", encoding="utf-8") as file:
             lines = file.readlines()
 
             for i, line in enumerate(lines, 1):
@@ -31,6 +41,7 @@ def cat_command(input_file: str, number_lines: bool = False):
 
     except FileNotFoundError:
         raise FileNotFoundError("файл не найден")
+
 
 def stats_command(input_file: str, top_count: int = 5):
     """Реализация команды stats"""
@@ -68,7 +79,9 @@ def main():
 
     stats_parser = subparsers.add_parser("stats", help="Частоты слов")
     stats_parser.add_argument("--input", required=True, help="Путь к входному файлу")
-    stats_parser.add_argument("--top", type=int, default=5, help="Количество топ-слов для вывода")
+    stats_parser.add_argument(
+        "--top", type=int, default=5, help="Количество топ-слов для вывода"
+    )
 
     args = parser.parse_args()
 
@@ -76,6 +89,7 @@ def main():
         cat_command(args.input, args.n)
     elif args.command == "stats":
         stats_command(args.input, args.top)
+
 
 if __name__ == "__main__":
     main()
