@@ -689,7 +689,7 @@ def test_top_tie_breaker():
     assert top_n(freq, 2) == [("aa", 2), ("bb", 2)]
 ```
 ### Задание 2
-![Картинка17](images/lab07/lab07_02.png)
+![Картинка18](images/lab07/lab07_02.png)
 ```python
 import json, csv
 from pathlib import Path
@@ -792,4 +792,67 @@ def test_csv_to_json_no_header_raises(tmp_path: Path):
 def test_missing_file_raises():
     with pytest.raises(FileNotFoundError):
         csv_to_json("nope.csv", "out.json")
+```
+### LAB08
+### Задание 1
+![Картинка17](images/lab08/lab08_02.png)
+```python
+from dataclasses import dataclass
+import datetime
+import json
+
+@dataclass
+class student:
+    fio: str
+    birthdate: str
+    group: str
+    gpa: float
+
+    def __post_init__(self):
+        try:
+            datetime.striptime(self.birthdate, "%Y/%M/%D")
+        except ValueError:
+            print("check data format")
+
+        if self.gpa <= 0 or self.gpa >= 5:
+            raise ValueError("GPA must be between 0 and 5")
+
+    def age(self) -> int:
+        today = datetime.date.today()
+        was_born = self.birthdate
+        return today - was_born
+
+    def to_dict(self):
+        return {
+            "fio": self.fio,
+            "age": self.age(),
+            "group": self.group,
+            "gpa": self.gpa,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(fio=data["fio"], birthdate=data["birthdate"], group=data["group"])
+
+    def __str__(self):
+        return f"{self.name} ({self.group} age {self.age()}) gpa: {self.gpa} )"
+```
+### Задание 2
+![Картинка17](images/lab08/lab08_01.png)
+```python
+import json
+from models import student
+
+
+def students_to_json(students: list[student], path: str):
+    data = [s.to_dict() for s in students]
+    with open(path, "w", encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+
+def studentd_from_json(path: str) -> list[student]:
+    with open(path, "r", encoding='utf-8') as f:
+        data = json.load(f)
+        return [student.from_dict(i) for i in data]
+
 ```

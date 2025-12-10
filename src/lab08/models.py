@@ -21,7 +21,7 @@ class student:
     def age(self) -> int:
         today = datetime.date.today()
         was_born = self.birthdate
-        return today.year - was_born
+        return today - was_born
 
     def to_dict(self):
         return {
@@ -37,4 +37,3 @@ class student:
 
     def __str__(self):
         return f"{self.name} ({self.group} age {self.age()}) gpa: {self.gpa} )"
-
