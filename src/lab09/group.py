@@ -30,7 +30,7 @@ class Group:
         self.rows.append(student)
 
     def find(self, substr: str):
-        return [r for r in self.rows if substr in r.to_dict()["fio"]]
+        return [r.lower for r in self.rows if substr.lower in r.to_dict()["fio"]]
 
     def remove(self, fio: str):
         while True:
