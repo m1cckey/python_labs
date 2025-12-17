@@ -632,7 +632,7 @@ if __name__ == "__main__":
 ```
 ### LAB07
 ### Задание 1
-![Картинка17](images/lab07/lab07_01.png)
+![Картинка19](images/lab07/lab07_01.png)
 ```python
 import pytest
 import os
@@ -689,7 +689,7 @@ def test_top_tie_breaker():
     assert top_n(freq, 2) == [("aa", 2), ("bb", 2)]
 ```
 ### Задание 2
-![Картинка18](images/lab07/lab07_02.png)
+![Картинка20](images/lab07/lab07_02.png)
 ```python
 import json, csv
 from pathlib import Path
@@ -795,7 +795,7 @@ def test_missing_file_raises():
 ```
 ### LAB08
 ### Задание 1
-![Картинка17](images/lab08/lab08_02.png)
+![Картинка21](images/lab08/lab08_02.png)
 ```python
 from dataclasses import dataclass
 import datetime
@@ -838,7 +838,7 @@ class student:
         return f"{self.name} ({self.group} age {self.age()}) gpa: {self.gpa} )"
 ```
 ### Задание 2
-![Картинка17](images/lab08/lab08_01.png)
+![Картинка22](images/lab08/lab08_01.png)
 ```python
 import json
 from models import student
@@ -854,5 +854,216 @@ def studentd_from_json(path: str) -> list[student]:
     with open(path, "r", encoding='utf-8') as f:
         data = json.load(f)
         return [student.from_dict(i) for i in data]
+```
+### LAB09
+### Задание 1
+![Картинка23](images/lab09/lab09_group.png)
+```python
+import csv
+from pathlib import Path
+import sys
+import os
 
+from src.lab08.models import Student
+
+
+class Group:
+    def __init__(self, storage_path: str):
+        self.path = Path(storage_path)
+        if not self.path.exists():
+            self.path.write_text("", encoding="utf-8")
+        self.rows = []
+        self._read_all()
+
+    def _read_all(self):
+        with open(self.path, "r", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                row["birthdate"] = row["birthdate"].replace("-", "/")
+                row["gpa"] = float(row["gpa"])
+                student = Student.from_dict(row)
+                self.rows.append(student)
+
+    def list(self):
+        return self.rows
+
+    def add(self, student: Student):
+        self.rows.append(student)
+
+    def find(self, substr: str):
+        return [r for r in self.rows if substr in r.to_dict()["fio"]]
+
+    def remove(self, fio: str):
+        while True:
+            is_found = False
+            for i, r in enumerate(self.rows):
+                if r.to_dict()["fio"] == fio:
+                    self.rows.pop(i)
+                    is_found = True
+                    break
+            if not is_found:
+                break
+
+    def update(self, fio: str, **fields):
+        student = self.find(fio)[0]
+        for key, value in fields.items():
+            setattr(student, key, value)
+
+    def __del__(self):
+        with open(self.path, "w", encoding="utf-8", newline="") as file:
+            writer = csv.DictWriter(file, fieldnames=Student.__dataclass_fields__.keys())
+            writer.writeheader()
+            for student in self.rows:
+                writer.writerow(student.to_dict())
+```
+### Задание 2
+![Картинка24](images/lab09/lab09_main.png)
+```python
+from src.lab09.group import Group
+from src.lab08.models import Student
+
+g = Group("data/lab09/students.csv")
+g.add(Student(fio="John Doe", birthdate="2000/01/01", gpa=3.5, group="SE-01"))
+g.remove("John Doe")
+g.update("Морозова Елена", gpa=3.9)
+```
+### LAB10
+### Задание 1
+![Картинка25](images/lab10/linked_list.png)
+```python
+class Node:
+    def __init__(self, value, next=None):
+        self.value = value
+        self.next = next
+
+
+class SinglyLinkedList:
+    def __init__(self):
+        self.head = None
+        self._size = 0
+
+    def append(self, value):
+        new_node = Node(value)
+
+        if self.head is None:
+            self.head = new_node
+            self._size += 1
+            return
+
+        current = self.head
+        while current.next is not None:
+            current = current.next
+
+        current.next = new_node
+        self._size += 1
+
+    def prepend(self, value):
+        new_node = Node(value, next=self.head)
+        self.head = new_node
+        self._size += 1
+
+    def insert(self, idx, value):
+        if idx < 0 or idx > self._size:
+            raise IndexError("index out of range")
+
+        if idx == 0:
+            self.prepend(value)
+            return
+
+        new_node = Node(value)
+
+        current = self.head
+        for _ in range(idx - 1):
+            current = current.next
+
+        new_node.next = current.next
+        current.next = new_node
+        self._size += 1
+
+    def remove_at(self, idx):
+        if idx < 0 or idx >= self._size:
+            raise IndexError("index out of range")
+
+        if idx == 0:
+            self.head = self.head.next
+            self._size -= 1
+            return
+
+        current = self.head
+        for _ in range(idx - 1):
+            current = current.next
+
+        current.next = current.next.next
+        self._size -= 1
+
+    def __iter__(self):
+        current = self.head
+        while current is not None:
+            yield current.value
+            current = current.next
+
+    def __len__(self):
+        return self._size
+
+    def __repr__(self):
+        values = list(self)
+        return f"SinglyLinkedList({values})"
+```
+### Задание 2
+![Картинка26](images/lab10/structures.png)
+```python
+from collections import deque
+from typing import Any
+
+
+class Stack:
+
+    def __init__(self):
+        self._data: list[Any] = []
+
+    def push(self, item: Any) -> None:
+        self._data.append(item)
+
+    def pop(self) -> Any:
+        if not self._data:
+            raise IndexError("pop from empty Stack")
+        return self._data.pop()
+
+    def peek(self) -> Any | None:
+
+        if not self._data:
+            return None
+        return self._data[-1]
+
+    def is_empty(self) -> bool:
+        return len(self._data) == 0
+
+    def __len__(self) -> int:
+        return len(self._data)
+
+
+class Queue:
+
+    def __init__(self):
+        self._data: deque[Any] = deque()
+
+    def enqueue(self, item: Any) -> None:
+
+        self._data.append(item)
+
+    def dequeue(self) -> Any:
+        if not self._data:
+            raise IndexError("dequeue from empty Queue")
+        return self._data.popleft()
+
+    def peek(self) -> Any | None:
+        if not self._data:
+            return None
+        return self._data[0]
+
+    def is_empty(self) -> bool:
+        return len(self._data) == 0
+
+    def __len__(self) -> int:
+        return len(self._data)
 ```

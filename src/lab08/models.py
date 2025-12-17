@@ -2,8 +2,9 @@ from dataclasses import dataclass
 import datetime
 import json
 
+
 @dataclass
-class student:
+class Student:
     fio: str
     birthdate: str
     group: str
